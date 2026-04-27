@@ -1,0 +1,426 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap');
+
+/* ── 電競主題根變數 ─────────────────────────── */
+:root {
+    --bg-primary:    #0d0d0d;
+    --bg-secondary:  #111318;
+    --bg-card:       rgba(17, 19, 24, 0.92);
+    --bg-input:      #0a0c10;
+    --neon-green:    #00ff99;
+    --neon-purple:   #7b2fff;
+    --neon-blue:     #00c8ff;
+    --text-primary:  #e0e0e0;
+    --text-muted:    #707080;
+    --border-dark:   #1e2030;
+    --border-neon:   #00ff9955;
+    --danger:        #ff3366;
+    --glow-green:    0 0 8px #00ff9966, 0 0 20px #00ff9933;
+    --glow-purple:   0 0 8px #7b2fff66, 0 0 20px #7b2fff33;
+    --glow-danger:   0 0 8px #ff336666;
+}
+
+/* ── Reset & 基礎 ────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+    min-height: 100vh;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: 500;
+}
+
+/* 滾動條 */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--neon-purple); border-radius: 3px; }
+
+/* ── 導覽列 ─────────────────────────────────── */
+.navbar-esports {
+    background: rgba(10, 10, 14, 0.97);
+    border-bottom: 1px solid var(--border-neon);
+    backdrop-filter: blur(12px);
+    padding: 0.6rem 1.5rem;
+}
+
+.navbar-brand-esports {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: var(--neon-green) !important;
+    text-shadow: var(--glow-green);
+    letter-spacing: 2px;
+    text-decoration: none;
+}
+
+.navbar-esports .nav-link {
+    color: var(--text-primary) !important;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 0.4rem 1rem !important;
+    transition: color .2s, text-shadow .2s;
+}
+
+.navbar-esports .nav-link:hover,
+.navbar-esports .nav-link.active {
+    color: var(--neon-green) !important;
+    text-shadow: var(--glow-green);
+}
+
+.navbar-toggler {
+    border-color: var(--neon-green) !important;
+}
+
+.navbar-toggler-icon {
+    filter: invert(1) sepia(1) saturate(5) hue-rotate(100deg);
+}
+
+/* ── 電競卡片 ───────────────────────────────── */
+.esports-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-neon);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: border-color .25s, box-shadow .25s, transform .2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.esports-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: linear-gradient(180deg, var(--neon-green), var(--neon-purple));
+    opacity: 0;
+    transition: opacity .25s;
+}
+
+.esports-card:hover {
+    border-color: var(--neon-green);
+    box-shadow: var(--glow-green);
+    transform: translateY(-2px);
+}
+
+.esports-card:hover::before { opacity: 1; }
+
+/* 車型卡片圖片容器 */
+.vehicle-card-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: #1a1d26;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-dark);
+}
+
+/* ── 表單控制項 ──────────────────────────────── */
+.form-control, .form-select {
+    background-color: var(--bg-input) !important;
+    border: 1px solid #2a2d3e !important;
+    color: var(--text-primary) !important;
+    border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--neon-green) !important;
+    box-shadow: 0 0 0 2px rgba(0,255,153,.15), var(--glow-green) !important;
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+    outline: none;
+}
+
+.form-control::placeholder { color: var(--text-muted) !important; }
+
+.form-label {
+    color: var(--neon-green);
+    font-weight: 600;
+    letter-spacing: 1px;
+    font-size: .9rem;
+    text-transform: uppercase;
+    margin-bottom: .35rem;
+}
+
+.form-text { color: var(--text-muted) !important; }
+
+.text-danger, .field-validation-error { color: var(--danger) !important; }
+
+/* ── 按鈕 ────────────────────────────────────── */
+.btn-esports {
+    background: transparent;
+    border: 2px solid var(--neon-green);
+    color: var(--neon-green);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: .95rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: .55rem 1.6rem;
+    border-radius: 4px;
+    transition: background .2s, box-shadow .2s, color .2s;
+    cursor: pointer;
+}
+
+.btn-esports:hover, .btn-esports:focus {
+    background: var(--neon-green);
+    color: #000;
+    box-shadow: var(--glow-green);
+}
+
+.btn-esports-purple {
+    border-color: var(--neon-purple);
+    color: var(--neon-purple);
+}
+
+.btn-esports-purple:hover, .btn-esports-purple:focus {
+    background: var(--neon-purple);
+    color: #fff;
+    box-shadow: var(--glow-purple);
+}
+
+.btn-esports-danger {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.btn-esports-danger:hover, .btn-esports-danger:focus {
+    background: var(--danger);
+    color: #fff;
+    box-shadow: var(--glow-danger);
+}
+
+.btn-esports-sm {
+    padding: .35rem 1rem;
+    font-size: .82rem;
+}
+
+/* ── 標題與文字 ──────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Orbitron', 'Rajdhani', sans-serif;
+    font-weight: 700;
+}
+
+.neon-text-green {
+    color: var(--neon-green);
+    text-shadow: var(--glow-green);
+}
+
+.neon-text-purple {
+    color: var(--neon-purple);
+    text-shadow: var(--glow-purple);
+}
+
+.section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.6rem;
+    color: var(--neon-green);
+    text-shadow: var(--glow-green);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border-neon);
+    padding-bottom: .5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ── 表格 ────────────────────────────────────── */
+.table-esports {
+    color: var(--text-primary);
+    border-color: var(--border-dark);
+}
+
+.table-esports thead th {
+    background: #0f1119;
+    color: var(--neon-green);
+    border-color: var(--border-neon);
+    font-family: 'Orbitron', sans-serif;
+    font-size: .78rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: .8rem 1rem;
+}
+
+.table-esports tbody tr {
+    border-color: var(--border-dark);
+    transition: background .15s;
+}
+
+.table-esports tbody tr:hover {
+    background: rgba(0,255,153,.04);
+}
+
+.table-esports tbody td {
+    border-color: var(--border-dark);
+    vertical-align: middle;
+    padding: .75rem 1rem;
+}
+
+/* ── 狀態標籤 ───────────────────────────────── */
+.badge-esports-confirmed {
+    background: transparent;
+    border: 1px solid var(--neon-green);
+    color: var(--neon-green);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: .25rem .65rem;
+    border-radius: 3px;
+    font-size: .8rem;
+}
+
+.badge-esports-cancelled {
+    background: transparent;
+    border: 1px solid var(--text-muted);
+    color: var(--text-muted);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    padding: .25rem .65rem;
+    border-radius: 3px;
+    font-size: .8rem;
+}
+
+.badge-esports-unavailable {
+    background: transparent;
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: .8rem;
+    padding: .25rem .65rem;
+    border-radius: 3px;
+}
+
+/* ── 警示訊息 ───────────────────────────────── */
+.alert-esports-success {
+    background: rgba(0,255,153,.08);
+    border: 1px solid var(--neon-green);
+    color: var(--neon-green);
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.alert-esports-danger {
+    background: rgba(255,51,102,.08);
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.validation-summary-errors ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: var(--danger);
+}
+
+/* ── Hero 區塊 ───────────────────────────────── */
+.hero-section {
+    min-height: calc(100vh - 70px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(123,47,255,.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(0,255,153,.1) 0%, transparent 50%),
+        var(--bg-primary);
+    text-align: center;
+    padding: 2rem;
+}
+
+.hero-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(2rem, 6vw, 4.5rem);
+    font-weight: 900;
+    letter-spacing: 4px;
+    line-height: 1.1;
+    color: #fff;
+    text-shadow: 0 0 30px rgba(0,255,153,.4);
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    margin-bottom: 2.5rem;
+}
+
+.hero-cta {
+    font-size: 1.1rem;
+    padding: .75rem 2.5rem;
+    letter-spacing: 3px;
+}
+
+/* ── 預約確認頁 ──────────────────────────────── */
+.confirmation-number {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.5rem, 4vw, 2.8rem);
+    font-weight: 900;
+    color: var(--neon-green);
+    text-shadow: var(--glow-green);
+    letter-spacing: 3px;
+    word-break: break-all;
+}
+
+/* ── 租金計算顯示 ─────────────────────────────── */
+#cost-display {
+    background: rgba(0,255,153,.05);
+    border: 1px solid var(--border-neon);
+    border-radius: 4px;
+    padding: 1rem 1.5rem;
+    margin-top: 1rem;
+}
+
+#cost-amount {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--neon-green);
+    text-shadow: var(--glow-green);
+}
+
+/* ── 分隔線 ──────────────────────────────────── */
+hr.esports-divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
+    margin: 1.5rem 0;
+    opacity: .4;
+}
+
+/* ── 頁尾 ────────────────────────────────────── */
+.footer-esports {
+    background: rgba(10, 10, 14, 0.97);
+    border-top: 1px solid var(--border-neon);
+    padding: 1rem 1.5rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: .85rem;
+    letter-spacing: 1px;
+}
+
+/* ── 每日租金標示 ─────────────────────────────── */
+.daily-rate-badge {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    color: var(--neon-green);
+    font-weight: 700;
+}
+
+/* ── RWD ─────────────────────────────────────── */
+@media (max-width: 768px) {
+    .hero-title { font-size: 2rem; }
+    .confirmation-number { font-size: 1.4rem; }
+    .esports-card { padding: 1rem; }
+    .section-title { font-size: 1.2rem; }
+}

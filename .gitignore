@@ -1,0 +1,42 @@
+## .NET build artifacts
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+## NuGet
+packages/
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Test results
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+## Environment & secrets
+.env
+.env.*
+appsettings.Development.json
+secrets.json
+
+## OS
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+
+## IDE
+.vscode/
+.idea/
+*.user
+
+## Published output
+publish/

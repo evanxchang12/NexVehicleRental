@@ -1,0 +1,140 @@
+@model CreateReservationViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "預約 " + Model.VehicleTypeName;
+}
+
+<div class="container-xl py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="esports-card">
+                <div class="mb-4">
+                    <a asp-action="Index" class="neon-text-purple" style="font-size:.9rem;text-decoration:none">
+                        <i class="bi bi-arrow-left me-1"></i>返回車型清單
+                    </a>
+                </div>
+
+                <h2 class="section-title"><i class="bi bi-calendar2-plus me-2"></i>預約車輛</h2>
+
+                <!-- 已選車型 -->
+                <div class="esports-card mb-4" style="background:rgba(123,47,255,.06);border-color:rgba(123,47,255,.3)">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div style="color:var(--text-muted);font-size:.8rem;letter-spacing:1px;text-transform:uppercase">已選車型</div>
+                            <div style="font-size:1.2rem;font-weight:700;color:var(--text-primary)">@Model.VehicleTypeName</div>
+                        </div>
+                        <div class="text-end">
+                            <div style="color:var(--text-muted);font-size:.8rem">每日租金</div>
+                            <div class="daily-rate-badge">NT$ @Model.DailyRate.ToString("N0")</div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+                {
+                    <div class="alert-esports-danger alert p-3 mb-3">
+                        <asp-validation-summary asp-validation-summary="All" />
+                    </div>
+                }
+
+                <form asp-action="Create" method="post" id="reservationForm" novalidate>
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="VehicleTypeId" />
+                    <input type="hidden" asp-for="VehicleTypeName" />
+                    <input type="hidden" asp-for="DailyRate" />
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="StartDate" class="form-label"></label>
+                            <input asp-for="StartDate" type="date" class="form-control" id="startDate"
+                                   min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="StartDate" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="EndDate" class="form-label"></label>
+                            <input asp-for="EndDate" type="date" class="form-control" id="endDate"
+                                   min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="EndDate" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- 即時租金計算 -->
+                    <div id="cost-display" class="mt-3" style="display:none">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span style="color:var(--text-muted);font-size:.85rem">預估租金</span>
+                                <div style="color:var(--text-muted);font-size:.8rem" id="cost-detail"></div>
+                            </div>
+                            <div class="text-end">
+                                <span id="cost-amount">NT$ 0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="cost-error" class="text-danger small mt-1" style="display:none"></div>
+
+                    <hr class="esports-divider mt-4" />
+
+                    <button type="submit" class="btn-esports w-100 mt-2" style="display:block;text-align:center"
+                            id="submitBtn" disabled>
+                        <i class="bi bi-calendar-check me-2"></i>確認預約
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const vehicleTypeId = @Model.VehicleTypeId;
+    const dailyRate = @Model.DailyRate;
+    const startInput = document.getElementById('startDate');
+    const endInput = document.getElementById('endDate');
+    const costDisplay = document.getElementById('cost-display');
+    const costAmount = document.getElementById('cost-amount');
+    const costDetail = document.getElementById('cost-detail');
+    const costError = document.getElementById('cost-error');
+    const submitBtn = document.getElementById('submitBtn');
+
+    async function calculateCost() {
+        const start = startInput.value;
+        const end = endInput.value;
+        if (!start || !end) return;
+
+        costError.style.display = 'none';
+        costDisplay.style.display = 'none';
+        submitBtn.disabled = true;
+
+        try {
+            const resp = await fetch(`/Reservation/CalculateCost?vehicleTypeId=${vehicleTypeId}&startDate=${start}&endDate=${end}`);
+            const data = await resp.json();
+
+            if (data.error) {
+                costError.textContent = data.error;
+                costError.style.display = 'block';
+                return;
+            }
+
+            if (data.days <= 0) {
+                costError.textContent = '結束日期必須晚於起始日期';
+                costError.style.display = 'block';
+                return;
+            }
+
+            costAmount.textContent = `NT$ ${Number(data.totalCost).toLocaleString()}`;
+            costDetail.textContent = `NT$ ${Number(data.dailyRate).toLocaleString()} × ${data.days} 天`;
+            costDisplay.style.display = 'block';
+            submitBtn.disabled = false;
+        } catch (e) {
+            costError.textContent = '計算失敗，請重試';
+            costError.style.display = 'block';
+        }
+    }
+
+    startInput.addEventListener('change', calculateCost);
+    endInput.addEventListener('change', calculateCost);
+
+    // 頁面載入後若已有值則觸發計算
+    if (startInput.value && endInput.value) calculateCost();
+</script>
+}

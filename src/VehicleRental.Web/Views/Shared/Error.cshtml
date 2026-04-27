@@ -1,0 +1,14 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "系統錯誤";
+}
+<div class="container-xl py-5 text-center">
+    <div class="esports-card mx-auto" style="max-width:480px">
+        <div style="font-size:4rem;color:var(--danger);text-shadow:var(--glow-danger)">
+            <i class="bi bi-exclamation-octagon-fill"></i>
+        </div>
+        <h2 class="mt-3" style="color:var(--danger)">系統發生錯誤</h2>
+        <p class="mt-2" style="color:var(--text-muted)">很抱歉，系統發生了意外錯誤。請稍後再試。</p>
+        <a asp-controller="Home" asp-action="Index" class="btn-esports mt-3 d-inline-block">返回首頁</a>
+    </div>
+</div>

@@ -1,0 +1,64 @@
+@using VehicleRental.Domain.Entities
+@model Reservation
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "預約確認";
+}
+
+<div class="container-xl py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="esports-card text-center">
+                <!-- 成功圖示 -->
+                <div style="font-size:3.5rem;color:var(--neon-green);text-shadow:var(--glow-green)">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <h2 class="mt-2 mb-1" style="font-family:'Orbitron',sans-serif;font-size:1.3rem;color:var(--text-primary)">
+                    預約成功！
+                </h2>
+                <p style="color:var(--text-muted);font-size:.9rem">請保存以下預約編號以備查詢</p>
+
+                <!-- 預約編號 -->
+                <div class="esports-card mt-3 mb-4" style="background:rgba(0,255,153,.05)">
+                    <div style="color:var(--text-muted);font-size:.75rem;letter-spacing:2px;text-transform:uppercase">預約編號</div>
+                    <div class="confirmation-number mt-1">@Model.ReservationNumber</div>
+                </div>
+
+                <hr class="esports-divider" />
+
+                <!-- 詳細資訊 -->
+                <div class="text-start">
+                    <div class="row g-2">
+                        <div class="col-5" style="color:var(--text-muted);font-size:.9rem">車型</div>
+                        <div class="col-7" style="font-weight:700">@Model.VehicleType?.Name</div>
+
+                        <div class="col-5" style="color:var(--text-muted);font-size:.9rem">租用起始</div>
+                        <div class="col-7" style="font-weight:700">@Model.StartDate.ToString("yyyy/MM/dd")</div>
+
+                        <div class="col-5" style="color:var(--text-muted);font-size:.9rem">租用結束</div>
+                        <div class="col-7" style="font-weight:700">@Model.EndDate.ToString("yyyy/MM/dd")</div>
+
+                        <div class="col-5" style="color:var(--text-muted);font-size:.9rem">租用天數</div>
+                        <div class="col-7" style="font-weight:700">@((Model.EndDate.DayNumber - Model.StartDate.DayNumber)) 天</div>
+
+                        <div class="col-5" style="color:var(--text-muted);font-size:.9rem">總租金</div>
+                        <div class="col-7 neon-text-green" style="font-weight:700;font-size:1.2rem">
+                            NT$ @Model.TotalCost.ToString("N0")
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="esports-divider" />
+
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a asp-action="My" class="btn-esports btn-esports-sm btn-esports-purple">
+                        <i class="bi bi-list-check me-1"></i>我的預約
+                    </a>
+                    <a asp-action="Index" class="btn-esports btn-esports-sm">
+                        <i class="bi bi-car-front me-1"></i>繼續租車
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

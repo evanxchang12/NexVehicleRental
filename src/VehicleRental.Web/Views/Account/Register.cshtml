@@ -1,0 +1,69 @@
+@model RegisterViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "建立帳戶";
+}
+
+<div class="container-xl py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
+            <div class="esports-card">
+                <div class="text-center mb-4">
+                    <div style="font-size:2.5rem;color:var(--neon-purple)"><i class="bi bi-person-plus-fill"></i></div>
+                    <h2 class="section-title mt-2 mb-0">建立帳戶</h2>
+                    <p style="color:var(--text-muted);font-size:.9rem">加入 NEXDRIVE，體驗頂級租車服務</p>
+                </div>
+
+                @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+                {
+                    <div class="alert-esports-danger alert p-3 mb-3">
+                        <asp-validation-summary asp-validation-summary="ModelOnly" />
+                    </div>
+                }
+
+                <form asp-action="Register" method="post" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label"></label>
+                        <input asp-for="FullName" class="form-control" placeholder="請輸入您的姓名" autocomplete="name" />
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" placeholder="example@email.com" autocomplete="email" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" class="form-control" placeholder="至少 6 個字元" autocomplete="new-password" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="ConfirmPassword" class="form-label"></label>
+                        <input asp-for="ConfirmPassword" class="form-control" placeholder="再次輸入密碼" autocomplete="new-password" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn-esports w-100" style="display:block;text-align:center">
+                        <i class="bi bi-person-check me-2"></i>建立帳戶
+                    </button>
+                </form>
+
+                <hr class="esports-divider mt-4" />
+                <p class="text-center mb-0" style="color:var(--text-muted);font-size:.9rem">
+                    已有帳號？
+                    <a asp-controller="Account" asp-action="Login" class="neon-text-green" style="font-weight:700">立即登入</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
