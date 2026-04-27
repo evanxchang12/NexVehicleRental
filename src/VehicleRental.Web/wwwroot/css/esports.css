@@ -71,10 +71,18 @@ html, body {
 
 .navbar-toggler {
     border-color: var(--neon-green) !important;
+    padding: .35rem .55rem;
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 3px rgba(0,255,153,.3);
+    outline: none;
 }
 
 .navbar-toggler-icon {
-    filter: invert(1) sepia(1) saturate(5) hue-rotate(100deg);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='%2300ff99' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+    width: 1.5em;
+    height: 1.5em;
 }
 
 /* ── 電競卡片 ───────────────────────────────── */
