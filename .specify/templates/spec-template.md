@@ -126,3 +126,12 @@
 - [Assumption about scope boundaries, e.g., "Mobile support is out of scope for v1"]
 - [Assumption about data/environment, e.g., "Existing authentication system will be reused"]
 - [Dependency on existing system/service, e.g., "Requires access to the existing user profile API"]
+
+## Constitution Compliance *(mandatory)*
+
+Every specification MUST include:
+
+- A clear mapping from each P1 user story to one or more automated tests (unit, integration, or contract) described under "Independent Test".
+- A short note confirming how the specification satisfies the project constitution (`.specify/memory/constitution.md`) or an explicit justification for any exceptions.
+
+The spec generator and reviewers are expected to verify these items before a plan is approved.

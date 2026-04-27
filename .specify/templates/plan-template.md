@@ -29,9 +29,19 @@
 
 ## Constitution Check
 
+## Constitution Check
+
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+This section enforces the project constitution located at `.specify/memory/constitution.md`.
+
+Required checks (automatable where possible):
+
+- CI tests relevant to the feature MUST be defined and runnable in a clean environment.
+- For P1 (MVP) user stories, at least one automated test case (unit/integration/contract) MUST be included and listed in the plan.
+- Any deviation from the constitution (e.g., deliberate overdesign) MUST include a short justification in the "Complexity Tracking" table and be approved by a reviewer.
+
+The `/speckit.plan` implementation SHOULD surface these gates and fail the plan generation if required fields are missing.
 
 ## Project Structure
 
