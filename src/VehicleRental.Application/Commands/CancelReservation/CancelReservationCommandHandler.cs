@@ -1,15 +1,15 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using VehicleRental.Application.Interfaces;
 using VehicleRental.Domain.Enums;
-using VehicleRental.Infrastructure.Data;
 
 namespace VehicleRental.Application.Commands.CancelReservation;
 
 public class CancelReservationCommandHandler : IRequestHandler<CancelReservationCommand, bool>
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    public CancelReservationCommandHandler(AppDbContext context)
+    public CancelReservationCommandHandler(IAppDbContext context)
     {
         _context = context;
     }

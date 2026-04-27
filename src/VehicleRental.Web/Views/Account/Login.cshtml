@@ -24,7 +24,7 @@
                 @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
                 {
                     <div class="alert-esports-danger alert p-3 mb-3">
-                        <asp-validation-summary asp-validation-summary="All" />
+                        <div asp-validation-summary="All" class="text-danger mb-0"></div>
                     </div>
                 }
 

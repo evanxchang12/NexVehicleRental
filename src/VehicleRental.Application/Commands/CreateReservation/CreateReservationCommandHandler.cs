@@ -1,17 +1,17 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using VehicleRental.Application.DTOs.Results;
+using VehicleRental.Application.Interfaces;
 using VehicleRental.Domain.Entities;
 using VehicleRental.Domain.Enums;
-using VehicleRental.Infrastructure.Data;
 
 namespace VehicleRental.Application.Commands.CreateReservation;
 
 public class CreateReservationCommandHandler : IRequestHandler<CreateReservationCommand, CreateReservationResult>
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    public CreateReservationCommandHandler(AppDbContext context)
+    public CreateReservationCommandHandler(IAppDbContext context)
     {
         _context = context;
     }

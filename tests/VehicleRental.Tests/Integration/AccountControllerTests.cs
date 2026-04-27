@@ -1,8 +1,5 @@
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
 using System.Net;
-using System.Net.Http.Headers;
-using VehicleRental.Infrastructure.Data;
 using Xunit;
 
 namespace VehicleRental.Tests.Integration;
@@ -10,141 +7,50 @@ namespace VehicleRental.Tests.Integration;
 public class AccountControllerTests : IClassFixture<TestWebApplicationFactory>
 {
     private readonly HttpClient _client;
-    private readonly TestWebApplicationFactory _factory;
 
     public AccountControllerTests(TestWebApplicationFactory factory)
     {
-        _factory = factory;
         _client = factory.CreateClient(new WebApplicationFactoryClientOptions
         {
             AllowAutoRedirect = false
         });
     }
 
-    [Fact]
-    public async Task Register_Get_Should_Return_200()
+    // ──────────────────────────────────────────
+    // 輔助方法
+    // ──────────────────────────────────────────
+
+    private async Task<string> GetAntiForgeryTokenAsync(string path)
     {
-        var response = await _client.GetAsync("/Account/Register");
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var html = await (await _client.GetAsync(path)).Content.ReadAsStringAsync();
+        return ExtractAntiForgeryToken(html);
     }
 
-    [Fact]
-    public async Task Register_Post_Should_RedirectToLogin_OnSuccess()
+    private async Task<HttpResponseMessage> PostRegisterAsync(
+        string fullName, string email, string password, string confirmPassword)
     {
-        // Arrange — 取得 AntiForgery token
-        var getResp = await _client.GetAsync("/Account/Register");
-        var html = await getResp.Content.ReadAsStringAsync();
-        var token = ExtractAntiForgeryToken(html);
-
+        var token = await GetAntiForgeryTokenAsync("/Account/Register");
         var form = new FormUrlEncodedContent(new[]
         {
-            new KeyValuePair<string,string>("FullName", "測試用戶"),
-            new KeyValuePair<string,string>("Email", "test@example.com"),
-            new KeyValuePair<string,string>("Password", "Test@12345"),
-            new KeyValuePair<string,string>("ConfirmPassword", "Test@12345"),
+            new KeyValuePair<string,string>("FullName", fullName),
+            new KeyValuePair<string,string>("Email", email),
+            new KeyValuePair<string,string>("Password", password),
+            new KeyValuePair<string,string>("ConfirmPassword", confirmPassword),
             new KeyValuePair<string,string>("__RequestVerificationToken", token)
         });
-
-        // Act
-        var response = await _client.PostAsync("/Account/Register", form);
-
-        // Assert — 成功後重導向登入頁
-        Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
-        Assert.Contains("/Account/Login", response.Headers.Location?.ToString() ?? "");
+        return await _client.PostAsync("/Account/Register", form);
     }
 
-    [Fact]
-    public async Task Register_Post_Should_Reject_DuplicateEmail()
+    private async Task<HttpResponseMessage> PostLoginAsync(string email, string password)
     {
-        // Arrange — 先建立一個帳號
-        using var scope = _factory.Services.CreateScope();
-        var ctx = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        ctx.Customers.Add(new Domain.Entities.Customer
-        {
-            FullName = "既有用戶",
-            Email = "duplicate@example.com",
-            PasswordHash = "hash",
-            CreatedAt = DateTimeOffset.UtcNow
-        });
-        ctx.SaveChanges();
-
-        var getResp = await _client.GetAsync("/Account/Register");
-        var html = await getResp.Content.ReadAsStringAsync();
-        var token = ExtractAntiForgeryToken(html);
-
+        var token = await GetAntiForgeryTokenAsync("/Account/Login");
         var form = new FormUrlEncodedContent(new[]
         {
-            new KeyValuePair<string,string>("FullName", "新用戶"),
-            new KeyValuePair<string,string>("Email", "duplicate@example.com"),
-            new KeyValuePair<string,string>("Password", "Test@12345"),
-            new KeyValuePair<string,string>("ConfirmPassword", "Test@12345"),
+            new KeyValuePair<string,string>("Email", email),
+            new KeyValuePair<string,string>("Password", password),
             new KeyValuePair<string,string>("__RequestVerificationToken", token)
         });
-
-        // Act
-        var response = await _client.PostAsync("/Account/Register", form);
-
-        // Assert — 回傳 200（重新顯示表單）
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var responseHtml = await response.Content.ReadAsStringAsync();
-        Assert.Contains("已被使用", responseHtml);
-    }
-
-    [Fact]
-    public async Task Login_Post_Should_SetAuthCookie_OnSuccess()
-    {
-        // Arrange — 先用 handler 建立帳號
-        using var scope = _factory.Services.CreateScope();
-        var ctx = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var hasher = new Microsoft.AspNetCore.Identity.PasswordHasher<Domain.Entities.Customer>();
-        var customer = new Domain.Entities.Customer
-        {
-            FullName = "登入測試",
-            Email = "login@example.com",
-            CreatedAt = DateTimeOffset.UtcNow
-        };
-        customer.PasswordHash = hasher.HashPassword(customer, "Password@123");
-        ctx.Customers.Add(customer);
-        ctx.SaveChanges();
-
-        var getResp = await _client.GetAsync("/Account/Login");
-        var html = await getResp.Content.ReadAsStringAsync();
-        var token = ExtractAntiForgeryToken(html);
-
-        var form = new FormUrlEncodedContent(new[]
-        {
-            new KeyValuePair<string,string>("Email", "login@example.com"),
-            new KeyValuePair<string,string>("Password", "Password@123"),
-            new KeyValuePair<string,string>("__RequestVerificationToken", token)
-        });
-
-        // Act
-        var response = await _client.PostAsync("/Account/Login", form);
-
-        // Assert — 成功後重導向，且包含 Set-Cookie
-        Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
-        Assert.True(response.Headers.Contains("Set-Cookie"));
-    }
-
-    [Fact]
-    public async Task Login_Post_Should_ReturnError_OnWrongPassword()
-    {
-        var getResp = await _client.GetAsync("/Account/Login");
-        var html = await getResp.Content.ReadAsStringAsync();
-        var token = ExtractAntiForgeryToken(html);
-
-        var form = new FormUrlEncodedContent(new[]
-        {
-            new KeyValuePair<string,string>("Email", "wrong@example.com"),
-            new KeyValuePair<string,string>("Password", "WrongPassword"),
-            new KeyValuePair<string,string>("__RequestVerificationToken", token)
-        });
-
-        var response = await _client.PostAsync("/Account/Login", form);
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var responseHtml = await response.Content.ReadAsStringAsync();
-        Assert.Contains("帳號或密碼錯誤", responseHtml);
+        return await _client.PostAsync("/Account/Login", form);
     }
 
     private static string ExtractAntiForgeryToken(string html)
@@ -156,4 +62,71 @@ public class AccountControllerTests : IClassFixture<TestWebApplicationFactory>
         var valueEnd = html.IndexOf("\"", valueStart, StringComparison.Ordinal);
         return html[valueStart..valueEnd];
     }
+
+    // ──────────────────────────────────────────
+    // 測試
+    // ──────────────────────────────────────────
+
+    [Fact]
+    public async Task Register_Get_Should_Return_200()
+    {
+        var response = await _client.GetAsync("/Account/Register");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Register_Post_Should_RedirectToLogin_OnSuccess()
+    {
+        var response = await PostRegisterAsync("測試用戶A", "usera@example.com", "Test@12345", "Test@12345");
+
+        Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+        Assert.Contains("/Account/Login", response.Headers.Location?.ToString() ?? "");
+    }
+
+    [Fact]
+    public async Task Register_Post_Should_Reject_DuplicateEmail()
+    {
+        // 先成功註冊一次
+        await PostRegisterAsync("既有用戶B", "userb@example.com", "Test@12345", "Test@12345");
+
+        // 第二次使用相同 Email 應失敗
+        var response = await PostRegisterAsync("新用戶B", "userb@example.com", "Test@12345", "Test@12345");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var html = await response.Content.ReadAsStringAsync();
+        Assert.Contains("已被使用", html);
+    }
+
+    [Fact]
+    public async Task Login_Post_Should_SetAuthCookie_OnSuccess()
+    {
+        // 先註冊
+        await PostRegisterAsync("登入測試C", "userc@example.com", "Password@123", "Password@123");
+
+        // 再登入
+        var response = await PostLoginAsync("userc@example.com", "Password@123");
+
+        Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+        Assert.True(response.Headers.Contains("Set-Cookie"));
+    }
+
+    [Fact]
+    public async Task Login_Post_Should_ReturnError_OnWrongPassword()
+    {
+        var response = await PostLoginAsync("nonexist@example.com", "WrongPassword");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var html = await response.Content.ReadAsStringAsync();
+        Assert.Contains("帳號或密碼錯誤", html);
+    }
+
+    [Fact]
+    public async Task ReservationIndex_Should_RedirectToLogin_WhenUnauthenticated()
+    {
+        var response = await _client.GetAsync("/Reservation");
+
+        Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+        Assert.Contains("/Account/Login", response.Headers.Location?.ToString() ?? "");
+    }
 }
+

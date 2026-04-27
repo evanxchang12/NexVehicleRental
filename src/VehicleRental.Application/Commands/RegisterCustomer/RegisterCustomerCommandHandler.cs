@@ -1,16 +1,16 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using VehicleRental.Application.Interfaces;
 using VehicleRental.Domain.Entities;
-using VehicleRental.Infrastructure.Data;
 
 namespace VehicleRental.Application.Commands.RegisterCustomer;
 
 public class RegisterCustomerCommandHandler : IRequestHandler<RegisterCustomerCommand, bool>
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    public RegisterCustomerCommandHandler(AppDbContext context)
+    public RegisterCustomerCommandHandler(IAppDbContext context)
     {
         _context = context;
     }

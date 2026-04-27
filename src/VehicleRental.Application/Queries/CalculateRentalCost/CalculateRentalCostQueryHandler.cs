@@ -1,15 +1,15 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using VehicleRental.Application.DTOs.Results;
-using VehicleRental.Infrastructure.Data;
+using VehicleRental.Application.Interfaces;
 
 namespace VehicleRental.Application.Queries.CalculateRentalCost;
 
 public class CalculateRentalCostQueryHandler : IRequestHandler<CalculateRentalCostQuery, CalculateRentalCostResult?>
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    public CalculateRentalCostQueryHandler(AppDbContext context)
+    public CalculateRentalCostQueryHandler(IAppDbContext context)
     {
         _context = context;
     }

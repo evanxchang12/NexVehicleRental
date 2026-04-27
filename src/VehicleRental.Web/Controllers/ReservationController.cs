@@ -93,6 +93,7 @@ public class ReservationController : Controller
     }
 
     [HttpGet]
+    [Microsoft.AspNetCore.Authorization.AllowAnonymous]
     public async Task<IActionResult> CalculateCost(int vehicleTypeId, string startDate, string endDate)
     {
         if (!DateOnly.TryParse(startDate, out var start) || !DateOnly.TryParse(endDate, out var end))

@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using VehicleRental.Application.Interfaces;
 using VehicleRental.Domain.Entities;
 using VehicleRental.Domain.Enums;
 
 namespace VehicleRental.Infrastructure.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext : DbContext, IAppDbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 

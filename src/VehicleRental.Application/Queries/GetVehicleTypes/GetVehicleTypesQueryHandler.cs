@@ -1,15 +1,15 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using VehicleRental.Application.DTOs;
-using VehicleRental.Infrastructure.Data;
+using VehicleRental.Application.Interfaces;
 
 namespace VehicleRental.Application.Queries.GetVehicleTypes;
 
 public class GetVehicleTypesQueryHandler : IRequestHandler<GetVehicleTypesQuery, IEnumerable<VehicleTypeDto>>
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    public GetVehicleTypesQueryHandler(AppDbContext context)
+    public GetVehicleTypesQueryHandler(IAppDbContext context)
     {
         _context = context;
     }

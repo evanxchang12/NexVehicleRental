@@ -1,16 +1,16 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using VehicleRental.Application.DTOs;
+using VehicleRental.Application.Interfaces;
 using VehicleRental.Domain.Enums;
-using VehicleRental.Infrastructure.Data;
 
 namespace VehicleRental.Application.Queries.GetMyReservations;
 
 public class GetMyReservationsQueryHandler : IRequestHandler<GetMyReservationsQuery, IEnumerable<ReservationSummaryDto>>
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    public GetMyReservationsQueryHandler(AppDbContext context)
+    public GetMyReservationsQueryHandler(IAppDbContext context)
     {
         _context = context;
     }

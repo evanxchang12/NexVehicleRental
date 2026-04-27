@@ -1,8 +1,15 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 using VehicleRental.Application.Commands.RegisterCustomer;
 using VehicleRental.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// 允許 CJK 字元直接輸出（不轉成 HTML 實體）
+builder.Services.Configure<Microsoft.Extensions.WebEncoders.WebEncoderOptions>(options =>
+    options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All));
 
 builder.Services.AddControllersWithViews();
 

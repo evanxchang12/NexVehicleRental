@@ -2,16 +2,16 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VehicleRental.Application.DTOs.Results;
+using VehicleRental.Application.Interfaces;
 using VehicleRental.Domain.Entities;
-using VehicleRental.Infrastructure.Data;
 
 namespace VehicleRental.Application.Commands.LoginCustomer;
 
 public class LoginCustomerCommandHandler : IRequestHandler<LoginCustomerCommand, LoginResult>
 {
-    private readonly AppDbContext _context;
+    private readonly IAppDbContext _context;
 
-    public LoginCustomerCommandHandler(AppDbContext context)
+    public LoginCustomerCommandHandler(IAppDbContext context)
     {
         _context = context;
     }
