@@ -192,6 +192,7 @@ a:hover { color: #66ffcc; text-decoration: underline; }
 
 /* ── 按鈕 ────────────────────────────────────── */
 .btn-esports {
+    display: inline-block;
     background: transparent;
     border: 2px solid var(--neon-green);
     color: var(--neon-green);
