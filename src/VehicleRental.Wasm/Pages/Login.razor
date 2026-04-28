@@ -31,7 +31,7 @@
 
                 <div class="mb-3 form-check">
                     <InputCheckbox @bind-Value="_model.RememberMe" class="form-check-input" id="rememberMe" />
-                    <label class="form-check-label text-muted small" for="rememberMe">記住我</label>
+                    <label class="form-check-label small" for="rememberMe">記住我</label>
                 </div>
 
                 <AlertMessage Message="@_error" Type="danger" />
@@ -41,7 +41,7 @@
                 </button>
             </EditForm>
 
-            <p class="text-center mt-3 text-muted small">
+            <p class="text-center mt-3 small">
                 沒有帳號？<a href="register">立即註冊</a>
             </p>
         </div>
