@@ -41,7 +41,7 @@
             </EditForm>
 
             <p class="text-center mt-3 text-muted small">
-                沒有帳號？<a href="/register">立即註冊</a>
+                沒有帳號？<a href="register">立即註冊</a>
             </p>
         </div>
     </div>
@@ -69,7 +69,7 @@
         var ok = await AuthService.LoginAsync(_model.Email!, _model.Password!, _model.RememberMe);
 
         if (ok)
-            Nav.NavigateTo("/", forceLoad: false);
+            Nav.NavigateTo("", forceLoad: false);
         else
             _error = "電子郵件或密碼不正確。";
 

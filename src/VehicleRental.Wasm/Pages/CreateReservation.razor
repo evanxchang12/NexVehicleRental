@@ -15,7 +15,7 @@
 else if (_vehicle is null)
 {
     <AlertMessage Message="找不到此車型。" Type="danger" />
-    <a href="/vehicles" class="btn btn-outline-light mt-3">返回車型清單</a>
+    <a href="vehicles" class="btn btn-outline-light mt-3">返回車型清單</a>
 }
 else
 {
@@ -80,7 +80,7 @@ else
     private async Task HandleSubmit()
     {
         var customerId = AuthService.CurrentCustomerId;
-        if (customerId is null) { Nav.NavigateTo("/login"); return; }
+        if (customerId is null) { Nav.NavigateTo("login"); return; }
 
         _busy = true;
         _error = null;
@@ -89,7 +89,7 @@ else
             customerId.Value, VehicleTypeId, _startDate, _endDate));
 
         if (result.Success)
-            Nav.NavigateTo($"/reservation/confirmation/{result.ReservationId}");
+            Nav.NavigateTo($"reservation/confirmation/{result.ReservationId}");
         else
             _error = result.Error ?? "預約失敗，請稍後再試。";
 

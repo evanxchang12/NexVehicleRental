@@ -3,7 +3,7 @@
 
 <nav class="navbar navbar-expand-lg esports-navbar">
     <div class="container">
-        <a class="navbar-brand esports-brand" href="/">&#9651; NexVehicleRental</a>
+        <a class="navbar-brand esports-brand" href="">&#9651; NexVehicleRental</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -12,13 +12,13 @@
                 <AuthorizeView>
                     <Authorized>
                         <li class="nav-item">
-                            <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">首頁</NavLink>
+                            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">首頁</NavLink>
                         </li>
                         <li class="nav-item">
-                            <NavLink class="nav-link" href="/vehicles">車型清單</NavLink>
+                            <NavLink class="nav-link" href="vehicles">車型清單</NavLink>
                         </li>
                         <li class="nav-item">
-                            <NavLink class="nav-link" href="/reservation/my">我的預約</NavLink>
+                            <NavLink class="nav-link" href="reservation/my">我的預約</NavLink>
                         </li>
                         <li class="nav-item">
                             <span class="nav-link esports-username">@context.User.Identity?.Name</span>
@@ -29,10 +29,10 @@
                     </Authorized>
                     <NotAuthorized>
                         <li class="nav-item">
-                            <NavLink class="nav-link" href="/login">登入</NavLink>
+                            <NavLink class="nav-link" href="login">登入</NavLink>
                         </li>
                         <li class="nav-item">
-                            <NavLink class="nav-link" href="/register">註冊</NavLink>
+                            <NavLink class="nav-link" href="register">註冊</NavLink>
                         </li>
                     </NotAuthorized>
                 </AuthorizeView>
@@ -45,7 +45,7 @@
     private async Task Logout()
     {
         await AuthService.LogoutAsync();
-        Nav.NavigateTo("/login", forceLoad: false);
+        Nav.NavigateTo("login", forceLoad: false);
     }
 }
 

@@ -37,7 +37,7 @@
             </EditForm>
 
             <p class="text-center mt-3 text-muted small">
-                已有帳號？<a href="/login">登入</a>
+                已有帳號？<a href="login">登入</a>
             </p>
         </div>
     </div>
@@ -57,7 +57,7 @@
             _model.FullName!, _model.Email!, _model.Password!));
 
         if (ok)
-            Nav.NavigateTo("/login?registered=1");
+            Nav.NavigateTo("login?registered=1");
         else
             _error = "此電子郵件已被使用，請嘗試其他電子郵件。";
 
