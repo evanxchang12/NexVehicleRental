@@ -1,14 +1,17 @@
+using System.Security.Cryptography;
+using System.Text;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VehicleRental.Application.DTOs.Results;
 using VehicleRental.Application.Interfaces;
-using VehicleRental.Domain.Entities;
 
 namespace VehicleRental.Application.Commands.LoginCustomer;
 
 public class LoginCustomerCommandHandler : IRequestHandler<LoginCustomerCommand, LoginResult>
 {
+    private const int Iterations = 100_000;
+    private const int HashLength = 32;
+
     private readonly IAppDbContext _context;
 
     public LoginCustomerCommandHandler(IAppDbContext context)
@@ -24,12 +27,37 @@ public class LoginCustomerCommandHandler : IRequestHandler<LoginCustomerCommand,
         if (customer is null)
             return new LoginResult(false, null, null);
 
-        var hasher = new PasswordHasher<Customer>();
-        var result = hasher.VerifyHashedPassword(customer, customer.PasswordHash, request.Password);
-
-        if (result == PasswordVerificationResult.Failed)
+        if (!VerifyPassword(request.Password, customer.PasswordHash))
             return new LoginResult(false, null, null);
 
         return new LoginResult(true, customer.Id, customer.FullName);
     }
+
+    private static bool VerifyPassword(string plainPassword, string storedHash)
+    {
+        if (!storedHash.StartsWith("PBKDF2:v1:"))
+            return false;
+
+        var parts = storedHash.Split(':');
+        if (parts.Length != 4)
+            return false;
+
+        try
+        {
+            var salt = Convert.FromHexString(parts[2]);
+            var expected = Convert.FromHexString(parts[3]);
+            var actual = Rfc2898DeriveBytes.Pbkdf2(
+                Encoding.UTF8.GetBytes(plainPassword),
+                salt,
+                Iterations,
+                HashAlgorithmName.SHA256,
+                HashLength);
+            return CryptographicOperations.FixedTimeEquals(actual, expected);
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }
+

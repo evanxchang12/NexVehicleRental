@@ -1,0 +1,198 @@
+/* ================================================================
+   NexVehicleRental — Esports / Gaming Theme
+   Variables: #0d0d0d (bg), #00ff99 (neon green), #7b2fff (purple)
+   Font: Rajdhani (Google Fonts)
+   ================================================================ */
+
+:root {
+    --neon-green: #00ff99;
+    --neon-purple: #7b2fff;
+    --bg-dark: #0d0d0d;
+    --bg-card: #141414;
+    --bg-card-hover: #1a1a2e;
+    --text-primary: #e8e8e8;
+    --text-muted: #888;
+    --border-dim: #2a2a2a;
+    --danger: #ff4466;
+}
+
+/* ── Base ─────────────────────────────────────────────────────── */
+html, body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+    font-size: 16px;
+}
+
+a { color: var(--neon-green); text-decoration: none; }
+a:hover { color: #66ffcc; text-decoration: underline; }
+
+/* ── App layout ─────────────────────────────────────────────── */
+.esports-app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.esports-main {
+    flex: 1;
+}
+
+/* ── Navbar ─────────────────────────────────────────────────── */
+.esports-navbar {
+    background-color: rgba(13, 13, 13, 0.95);
+    border-bottom: 1px solid var(--neon-green);
+    backdrop-filter: blur(8px);
+}
+
+.esports-brand {
+    color: var(--neon-green) !important;
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px var(--neon-green);
+}
+
+.esports-navbar .nav-link {
+    color: var(--text-primary) !important;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.esports-navbar .nav-link:hover,
+.esports-navbar .nav-link.active {
+    color: var(--neon-green) !important;
+    text-shadow: 0 0 6px var(--neon-green);
+}
+
+.esports-username {
+    color: var(--neon-purple) !important;
+    font-weight: 600;
+}
+
+.esports-btn-logout {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+.esports-btn-logout:hover {
+    background-color: var(--danger);
+    color: #fff;
+}
+
+/* ── Cards ──────────────────────────────────────────────────── */
+.card, .esports-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-dim);
+    color: var(--text-primary);
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.card:hover, .esports-card:hover {
+    border-color: var(--neon-green);
+    box-shadow: 0 0 12px rgba(0, 255, 153, 0.2);
+}
+
+.card-title { color: var(--neon-green); font-weight: 700; }
+.card-text  { color: var(--text-muted); }
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+.btn-primary, .esports-btn-primary {
+    background-color: var(--neon-purple);
+    border-color: var(--neon-purple);
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: background-color 0.2s, box-shadow 0.2s;
+}
+.btn-primary:hover, .esports-btn-primary:hover {
+    background-color: #9d55ff;
+    border-color: #9d55ff;
+    box-shadow: 0 0 10px rgba(123, 47, 255, 0.5);
+}
+
+.btn-success, .esports-btn-success {
+    background-color: var(--neon-green);
+    border-color: var(--neon-green);
+    color: #000;
+    font-weight: 700;
+}
+.btn-success:hover, .esports-btn-success:hover {
+    background-color: #00cc7a;
+    border-color: #00cc7a;
+    box-shadow: 0 0 10px rgba(0, 255, 153, 0.4);
+}
+
+/* ── Forms ──────────────────────────────────────────────────── */
+.form-control, .form-select {
+    background-color: #1a1a1a;
+    border-color: var(--border-dim);
+    color: var(--text-primary);
+}
+.form-control:focus, .form-select:focus {
+    background-color: #1a1a1a;
+    border-color: var(--neon-green);
+    box-shadow: 0 0 0 0.2rem rgba(0, 255, 153, 0.2);
+    color: var(--text-primary);
+}
+.form-label { color: var(--text-muted); font-weight: 500; }
+
+/* ── Alerts ─────────────────────────────────────────────────── */
+.esports-alert {
+    background-color: #1a1a1a;
+    border-left: 3px solid var(--neon-green);
+    color: var(--text-primary);
+}
+.esports-alert.alert-danger  { border-left-color: var(--danger); }
+.esports-alert.alert-warning { border-left-color: #ffaa00; }
+.esports-alert.alert-success { border-left-color: var(--neon-green); }
+
+/* ── Tables ─────────────────────────────────────────────────── */
+.table {
+    color: var(--text-primary);
+}
+.table thead th {
+    border-bottom-color: var(--neon-green);
+    color: var(--neon-green);
+    font-weight: 700;
+}
+.table tbody tr { border-color: var(--border-dim); }
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: rgba(255,255,255,0.03);
+    color: var(--text-primary);
+}
+
+/* ── Headings ───────────────────────────────────────────────── */
+h1, h2, h3 {
+    color: var(--neon-green);
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* ── Loading ────────────────────────────────────────────────── */
+.esports-spinner {
+    color: var(--neon-green);
+    width: 3rem;
+    height: 3rem;
+}
+.esports-loading-text {
+    color: var(--neon-green);
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 2px;
+}
+
+/* ── Badge / Price ──────────────────────────────────────────── */
+.esports-price {
+    color: var(--neon-green);
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+.esports-badge-confirmed {
+    background-color: var(--neon-green);
+    color: #000;
+    font-weight: 700;
+}
+.esports-badge-cancelled {
+    background-color: #444;
+    color: var(--text-muted);
+}

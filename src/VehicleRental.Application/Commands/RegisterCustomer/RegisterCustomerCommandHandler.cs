@@ -1,5 +1,6 @@
+using System.Security.Cryptography;
+using System.Text;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VehicleRental.Application.Interfaces;
 using VehicleRental.Domain.Entities;
@@ -8,11 +9,16 @@ namespace VehicleRental.Application.Commands.RegisterCustomer;
 
 public class RegisterCustomerCommandHandler : IRequestHandler<RegisterCustomerCommand, bool>
 {
-    private readonly IAppDbContext _context;
+    private const int Iterations = 100_000;
+    private const int HashLength = 32;
 
-    public RegisterCustomerCommandHandler(IAppDbContext context)
+    private readonly IAppDbContext _context;
+    private readonly IPersistenceService? _persistence;
+
+    public RegisterCustomerCommandHandler(IAppDbContext context, IPersistenceService? persistence = null)
     {
         _context = context;
+        _persistence = persistence;
     }
 
     public async Task<bool> Handle(RegisterCustomerCommand request, CancellationToken cancellationToken)
@@ -23,19 +29,29 @@ public class RegisterCustomerCommandHandler : IRequestHandler<RegisterCustomerCo
         if (emailExists)
             return false;
 
+        var salt = RandomNumberGenerator.GetBytes(16);
+        var hash = Rfc2898DeriveBytes.Pbkdf2(
+            Encoding.UTF8.GetBytes(request.Password),
+            salt,
+            Iterations,
+            HashAlgorithmName.SHA256,
+            HashLength);
+
         var customer = new Customer
         {
             FullName = request.FullName,
             Email = request.Email,
+            PasswordHash = $"PBKDF2:v1:{Convert.ToHexString(salt)}:{Convert.ToHexString(hash)}",
             CreatedAt = DateTimeOffset.UtcNow
         };
-
-        var hasher = new PasswordHasher<Customer>();
-        customer.PasswordHash = hasher.HashPassword(customer, request.Password);
 
         _context.Customers.Add(customer);
         await _context.SaveChangesAsync(cancellationToken);
 
+        if (_persistence is not null)
+            await _persistence.SaveAsync();
+
         return true;
     }
 }
+

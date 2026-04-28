@@ -1,0 +1,115 @@
+@page "/reservation/my"
+@attribute [Authorize]
+@inject IMediator Mediator
+@inject BrowserAuthenticationStateProvider AuthService
+
+<h2 class="mb-4">我的預約</h2>
+
+@if (_loading)
+{
+    <div class="text-center py-4">
+        <div class="spinner-border esports-spinner" role="status"></div>
+    </div>
+}
+else if (_reservations.Count == 0)
+{
+    <div class="text-center py-5">
+        <p class="text-muted">您目前沒有任何預約。</p>
+        <a href="/vehicles" class="btn btn-success esports-btn-success mt-2">立即預約</a>
+    </div>
+}
+else
+{
+    <AlertMessage Message="@_message" Type="@_messageType" />
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>預約編號</th>
+                    <th>車型</th>
+                    <th>取車日期</th>
+                    <th>還車日期</th>
+                    <th>費用</th>
+                    <th>狀態</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in _reservations)
+                {
+                    <tr>
+                        <td><code>@r.ReservationNumber</code></td>
+                        <td>@r.VehicleTypeName</td>
+                        <td>@r.StartDate.ToString("yyyy/MM/dd")</td>
+                        <td>@r.EndDate.ToString("yyyy/MM/dd")</td>
+                        <td>NT$ @r.TotalCost.ToString("N0")</td>
+                        <td>
+                            @if (r.Status == "Confirmed")
+                            {
+                                <span class="badge esports-badge-confirmed">已確認</span>
+                            }
+                            else
+                            {
+                                <span class="badge esports-badge-cancelled">已取消</span>
+                            }
+                        </td>
+                        <td>
+                            @if (r.Status == "Confirmed" && r.StartDate > DateOnly.FromDateTime(DateTime.Today))
+                            {
+                                <button class="btn btn-outline-danger btn-sm"
+                                        @onclick="() => Cancel(r.Id)"
+                                        disabled="@(_cancellingId == r.Id)">
+                                    @(_cancellingId == r.Id ? "處理中…" : "取消")
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private List<VehicleRental.Application.DTOs.ReservationSummaryDto> _reservations = [];
+    private bool _loading = true;
+    private int? _cancellingId;
+    private string? _message;
+    private string _messageType = "info";
+
+    protected override async Task OnInitializedAsync() => await LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        var customerId = AuthService.CurrentCustomerId;
+        if (customerId is not null)
+            _reservations = (await Mediator.Send(
+                new VehicleRental.Application.Queries.GetMyReservations.GetMyReservationsQuery(customerId.Value))).ToList();
+        _loading = false;
+    }
+
+    private async Task Cancel(int reservationId)
+    {
+        _cancellingId = reservationId;
+        var customerId = AuthService.CurrentCustomerId!.Value;
+
+        var ok = await Mediator.Send(
+            new VehicleRental.Application.Commands.CancelReservation.CancelReservationCommand(reservationId, customerId));
+
+        if (ok)
+        {
+            _message = "預約已成功取消。";
+            _messageType = "success";
+            await LoadAsync();
+        }
+        else
+        {
+            _message = "無法取消此預約（可能已開始或已取消）。";
+            _messageType = "danger";
+        }
+
+        _cancellingId = null;
+    }
+}

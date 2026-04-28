@@ -29,11 +29,11 @@
 
 **目的**：建立 Blazor WASM 專案、更新 NuGet 套件、設定 CI/CD 工作流程
 
-- [ ] T001 建立 Blazor WASM 專案並加入方案：執行 `dotnet new blazorwasm -n VehicleRental.Wasm -o src/VehicleRental.Wasm` 及 `dotnet sln add`，對應 quickstart.md A1 節
-- [ ] T002 更新 `src/VehicleRental.Infrastructure/VehicleRental.Infrastructure.csproj`：移除 `Microsoft.EntityFrameworkCore.SqlServer`，加入 `Microsoft.EntityFrameworkCore.InMemory 10.*`
-- [ ] T003 更新 `src/VehicleRental.Wasm/VehicleRental.Wasm.csproj`：加入 MediatR 12.*、Microsoft.AspNetCore.Components.WebAssembly.Authentication 10.*，並設定專案參照至 Application 和 Infrastructure
-- [ ] T004 更新 `tests/VehicleRental.Tests/VehicleRental.Tests.csproj`：移除 Microsoft.AspNetCore.Mvc.Testing，加入 `bunit 1.*`，保留 Moq 4.* 和 EF Core InMemory
-- [ ] T005 [P] 建立 `.github/workflows/deploy.yml` GitHub Actions 自動部署工作流程（setup-dotnet@v4、dotnet publish、upload-pages-artifact@v3、deploy-pages@v4），內容參照 quickstart.md B4 節
+- [X] T001 建立 Blazor WASM 專案並加入方案：執行 `dotnet new blazorwasm -n VehicleRental.Wasm -o src/VehicleRental.Wasm` 及 `dotnet sln add`，對應 quickstart.md A1 節
+- [X] T002 更新 `src/VehicleRental.Infrastructure/VehicleRental.Infrastructure.csproj`：移除 `Microsoft.EntityFrameworkCore.SqlServer`，加入 `Microsoft.EntityFrameworkCore.InMemory 10.*`
+- [X] T003 更新 `src/VehicleRental.Wasm/VehicleRental.Wasm.csproj`：加入 MediatR 12.*、Microsoft.AspNetCore.Components.WebAssembly.Authentication 10.*，並設定專案參照至 Application 和 Infrastructure
+- [X] T004 更新 `tests/VehicleRental.Tests/VehicleRental.Tests.csproj`：移除 Microsoft.AspNetCore.Mvc.Testing，加入 `bunit 1.*`，保留 Moq 4.* 和 EF Core InMemory
+- [X] T005 [P] 建立 `.github/workflows/deploy.yml` GitHub Actions 自動部署工作流程（setup-dotnet@v4、dotnet publish、upload-pages-artifact@v3、deploy-pages@v4），內容參照 quickstart.md B4 節
 
 **Checkpoint**：方案可 `dotnet build` 成功
 
@@ -45,21 +45,21 @@
 
 **⚠️ CRITICAL**：所有使用者故事實作皆依賴此 Phase 完成
 
-- [ ] T006 修改 `src/VehicleRental.Infrastructure/Data/AppDbContext.cs`：移除 SQL Server 設定與 Migration 相關程式碼，確認 `OnModelCreating` 保留所有 Entity 設定（HasIndex、HasMaxLength 等），**不**加入 HasData seed（改由 DbInitializer 注入）
-- [ ] T007 建立 `src/VehicleRental.Infrastructure/Data/DbInitializer.cs`：實作 `IDbInitializer` 介面，於 `InitializeAsync()` 中檢查 VehicleTypes 是否為空，若空則加入 4 筆 Seed Data（Toyota Camry/Mazda CX-5/BMW 3 Series/Toyota Hiace Van）
-- [ ] T008 建立 `src/VehicleRental.Application/Interfaces/IPersistenceService.cs`（`Task SaveAsync()` 與 `Task RestoreAsync()`）
-- [ ] T009 建立 `src/VehicleRental.Infrastructure/Services/LocalStoragePersistenceService.cs`：注入 `IAppDbContext` 與 `IJSRuntime`，`SaveAsync()` 序列化 Customers/VehicleTypes/Reservations 至 localStorage key `vehiclerental-data`，`RestoreAsync()` 從 localStorage 讀取並 Add/Update EF InMemory 資料集
-- [ ] T010 修改 `src/VehicleRental.Infrastructure/DependencyInjection.cs`：新增 `AddInfrastructureWasm()` 擴充方法，註冊 `UseInMemoryDatabase("VehicleRentalDb")`、`IAppDbContext`、`IPersistenceService`（LocalStoragePersistenceService）、`IDbInitializer`（DbInitializer）
-- [ ] T011 建立 `src/VehicleRental.Wasm/Auth/BrowserAuthenticationStateProvider.cs`：繼承 `AuthenticationStateProvider`，以 `sessionStorage`（預設）或 `localStorage`（RememberMe）儲存 `{customerId, fullName}` JSON；`LoginAsync()` 以 `Rfc2898DeriveBytes.Pbkdf2` 驗證密碼並呼叫 `NotifyAuthenticationStateChanged`；`LogoutAsync()` 清除 storage
-- [ ] T012 建立/修改 `src/VehicleRental.Wasm/Program.cs`：設定 `AddMediatR`（ApplicationAssembly）、`AddInfrastructureWasm()`、`AddAuthorizationCore()`、`BrowserAuthenticationStateProvider` 的 DI 註冊；在 `RunAsync` 前呼叫 `IDbInitializer.InitializeAsync()` 與 `IPersistenceService.RestoreAsync()`
-- [ ] T013 建立/修改 `src/VehicleRental.Wasm/App.razor`：設定 `AuthorizeRouteView` + `DefaultLayout`；`<NotAuthorized>` 使用 `RedirectToLogin` 元件
-- [ ] T014 [P] 建立 `src/VehicleRental.Wasm/Shared/RedirectToLogin.razor`：在 `OnInitialized` 中以 `NavigationManager.NavigateTo("/login", forceLoad: false)` 重導向
-- [ ] T015 [P] 建立 `src/VehicleRental.Wasm/Shared/AlertMessage.razor`：接受 `Type`（success/warning/danger）和 `Message` 參數，呈現對應 Bootstrap alert div，帶電競主題色
-- [ ] T016 [P] 建立 `src/VehicleRental.Wasm/Shared/MainLayout.razor`：含 NavMenu 插槽、`@Body` 區域、電競主題背景色套用
-- [ ] T017 [P] 建立 `src/VehicleRental.Wasm/Shared/NavMenu.razor`：已登入顯示「首頁、車型清單、我的預約」及用戶姓名與登出按鈕；未登入顯示「登入、註冊」連結；使用 `AuthorizeView` 切換顯示內容
-- [ ] T018 [P] 建立/修改 `src/VehicleRental.Wasm/wwwroot/index.html`：在 `<head>` 加入 SPA 路由還原腳本（參照 quickstart.md A5 節），設定 `<base href="/" />`（本地），加入 Bootstrap 5.3 CDN、Google Fonts Rajdhani、esports.css 引用
-- [ ] T019 [P] 建立 `src/VehicleRental.Wasm/wwwroot/404.html`：SPA 路由重定向腳本（參照 quickstart.md A5 節）
-- [ ] T020 [P] 建立 `src/VehicleRental.Wasm/wwwroot/.nojekyll`（空檔案）及 `src/VehicleRental.Wasm/wwwroot/css/esports.css`（電競主題：深黑 #0d0d0d、螢光綠 #00ff99、電競紫 #7b2fff、Rajdhani 字型、按鈕 neon glow、卡片半透明深框）
+- [X] T006 修改 `src/VehicleRental.Infrastructure/Data/AppDbContext.cs`：移除 SQL Server 設定與 Migration 相關程式碼，確認 `OnModelCreating` 保留所有 Entity 設定（HasIndex、HasMaxLength 等），**不**加入 HasData seed（改由 DbInitializer 注入）
+- [X] T007 建立 `src/VehicleRental.Infrastructure/Data/DbInitializer.cs`：實作 `IDbInitializer` 介面，於 `InitializeAsync()` 中檢查 VehicleTypes 是否為空，若空則加入 4 筆 Seed Data（Toyota Camry/Mazda CX-5/BMW 3 Series/Toyota Hiace Van）
+- [X] T008 建立 `src/VehicleRental.Application/Interfaces/IPersistenceService.cs`（`Task SaveAsync()` 與 `Task RestoreAsync()`）
+- [X] T009 建立 `src/VehicleRental.Infrastructure/Services/LocalStoragePersistenceService.cs`：注入 `IAppDbContext` 與 `IJSRuntime`，`SaveAsync()` 序列化 Customers/VehicleTypes/Reservations 至 localStorage key `vehiclerental-data`，`RestoreAsync()` 從 localStorage 讀取並 Add/Update EF InMemory 資料集
+- [X] T010 修改 `src/VehicleRental.Infrastructure/DependencyInjection.cs`：新增 `AddInfrastructureWasm()` 擴充方法，註冊 `UseInMemoryDatabase("VehicleRentalDb")`、`IAppDbContext`、`IPersistenceService`（LocalStoragePersistenceService）、`IDbInitializer`（DbInitializer）
+- [X] T011 建立 `src/VehicleRental.Wasm/Auth/BrowserAuthenticationStateProvider.cs`：繼承 `AuthenticationStateProvider`，以 `sessionStorage`（預設）或 `localStorage`（RememberMe）儲存 `{customerId, fullName}` JSON；`LoginAsync()` 以 `Rfc2898DeriveBytes.Pbkdf2` 驗證密碼並呼叫 `NotifyAuthenticationStateChanged`；`LogoutAsync()` 清除 storage
+- [X] T012 建立/修改 `src/VehicleRental.Wasm/Program.cs`：設定 `AddMediatR`（ApplicationAssembly）、`AddInfrastructureWasm()`、`AddAuthorizationCore()`、`BrowserAuthenticationStateProvider` 的 DI 註冊；在 `RunAsync` 前呼叫 `IDbInitializer.InitializeAsync()` 與 `IPersistenceService.RestoreAsync()`
+- [X] T013 建立/修改 `src/VehicleRental.Wasm/App.razor`：設定 `AuthorizeRouteView` + `DefaultLayout`；`<NotAuthorized>` 使用 `RedirectToLogin` 元件
+- [X] T014 [P] 建立 `src/VehicleRental.Wasm/Shared/RedirectToLogin.razor`：在 `OnInitialized` 中以 `NavigationManager.NavigateTo("/login", forceLoad: false)` 重導向
+- [X] T015 [P] 建立 `src/VehicleRental.Wasm/Shared/AlertMessage.razor`：接受 `Type`（success/warning/danger）和 `Message` 參數，呈現對應 Bootstrap alert div，帶電競主題色
+- [X] T016 [P] 建立 `src/VehicleRental.Wasm/Shared/MainLayout.razor`：含 NavMenu 插槽、`@Body` 區域、電競主題背景色套用
+- [X] T017 [P] 建立 `src/VehicleRental.Wasm/Shared/NavMenu.razor`：已登入顯示「首頁、車型清單、我的預約」及用戶姓名與登出按鈕；未登入顯示「登入、註冊」連結；使用 `AuthorizeView` 切換顯示內容
+- [X] T018 [P] 建立/修改 `src/VehicleRental.Wasm/wwwroot/index.html`：在 `<head>` 加入 SPA 路由還原腳本（參照 quickstart.md A5 節），設定 `<base href="/" />`（本地），加入 Bootstrap 5.3 CDN、Google Fonts Rajdhani、esports.css 引用
+- [X] T019 [P] 建立 `src/VehicleRental.Wasm/wwwroot/404.html`：SPA 路由重定向腳本（參照 quickstart.md A5 節）
+- [X] T020 [P] 建立 `src/VehicleRental.Wasm/wwwroot/.nojekyll`（空檔案）及 `src/VehicleRental.Wasm/wwwroot/css/esports.css`（電競主題：深黑 #0d0d0d、螢光綠 #00ff99、電競紫 #7b2fff、Rajdhani 字型、按鈕 neon glow、卡片半透明深框）
 
 **Checkpoint**：Foundation ready — `dotnet run` 可啟動 Blazor WASM，顯示基礎 Layout
 
@@ -73,15 +73,15 @@
 
 ### 使用者故事 1 測試（REQUIRED for P1/MVP — 先寫測試確認 FAIL 後再實作）
 
-- [ ] T021 [P] [US1] 建立 `tests/VehicleRental.Tests/Unit/Commands/RegisterCustomerCommandHandlerTests.cs`：`Handle_Should_HashPassword_And_SaveCustomer` 測試（驗證 PasswordHash 不等於明文）；`Handle_Should_Reject_DuplicateEmail` 測試（同 Email 第二次拋例外或回傳 Failure）
-- [ ] T022 [P] [US1] 建立 `tests/VehicleRental.Tests/Unit/Commands/LoginCustomerCommandHandlerTests.cs`：`Handle_Should_ReturnSuccess_WhenCredentialsValid` 測試；`Handle_Should_ReturnFailure_WhenWrongPassword` 測試；`Handle_Should_ReturnFailure_WhenEmailNotFound` 測試
+- [X] T021 [P] [US1] 建立 `tests/VehicleRental.Tests/Unit/Commands/RegisterCustomerCommandHandlerTests.cs`：`Handle_Should_HashPassword_And_SaveCustomer` 測試（驗證 PasswordHash 不等於明文）；`Handle_Should_Reject_DuplicateEmail` 測試（同 Email 第二次拋例外或回傳 Failure）
+- [X] T022 [P] [US1] 建立 `tests/VehicleRental.Tests/Unit/Commands/LoginCustomerCommandHandlerTests.cs`：`Handle_Should_ReturnSuccess_WhenCredentialsValid` 測試；`Handle_Should_ReturnFailure_WhenWrongPassword` 測試；`Handle_Should_ReturnFailure_WhenEmailNotFound` 測試
 
 ### 使用者故事 1 實作
 
-- [ ] T023 [P] [US1] 修改/確認 `src/VehicleRental.Application/Commands/RegisterCustomer/RegisterCustomerCommand.cs` 及 `RegisterCustomerCommandHandler.cs`：使用 `Rfc2898DeriveBytes.Pbkdf2` 取代 `PasswordHasher<T>`（相容 WASM），以 `PBKDF2:v1:{saltHex}:{hashHex}` 格式儲存；重複 Email 回傳 `RegisterResult { bool Success, string? Error }`
-- [ ] T024 [P] [US1] 修改/確認 `src/VehicleRental.Application/Commands/LoginCustomer/LoginCustomerCommand.cs` 及 `LoginCustomerCommandHandler.cs`：以 `Rfc2898DeriveBytes.Pbkdf2` 驗證密碼；成功回傳 `LoginResult { bool Success, int? CustomerId, string? FullName }`；完成後呼叫（或通知呼叫端呼叫）`IPersistenceService.SaveAsync()`
-- [ ] T025 [US1] 建立 `src/VehicleRental.Wasm/Pages/Register.razor`：`@page "/register"`；EditForm + DataAnnotationsValidator 綁定 `RegisterModel`；送出呼叫 `RegisterCustomerCommand`；成功後 `NavigationManager.NavigateTo("/login?registered=true")`；重複 Email 顯示 AlertMessage type=danger；顯示 ValidationSummary 及個別 ValidationMessage；電競主題表單樣式
-- [ ] T026 [US1] 建立 `src/VehicleRental.Wasm/Pages/Login.razor`：`@page "/login"`；EditForm 綁定 `LoginModel`；送出呼叫 `BrowserAuthenticationStateProvider.LoginAsync()`；成功後 NavigateTo "/vehicles"；失敗顯示「帳號或密碼錯誤」AlertMessage；若 URL 帶 `?registered=true` 則顯示「註冊成功，請登入」綠色提示；電競主題樣式
+- [X] T023 [P] [US1] 修改/確認 `src/VehicleRental.Application/Commands/RegisterCustomer/RegisterCustomerCommand.cs` 及 `RegisterCustomerCommandHandler.cs`：使用 `Rfc2898DeriveBytes.Pbkdf2` 取代 `PasswordHasher<T>`（相容 WASM），以 `PBKDF2:v1:{saltHex}:{hashHex}` 格式儲存；重複 Email 回傳 `RegisterResult { bool Success, string? Error }`
+- [X] T024 [P] [US1] 修改/確認 `src/VehicleRental.Application/Commands/LoginCustomer/LoginCustomerCommand.cs` 及 `LoginCustomerCommandHandler.cs`：以 `Rfc2898DeriveBytes.Pbkdf2` 驗證密碼；成功回傳 `LoginResult { bool Success, int? CustomerId, string? FullName }`；完成後呼叫（或通知呼叫端呼叫）`IPersistenceService.SaveAsync()`
+- [X] T025 [US1] 建立 `src/VehicleRental.Wasm/Pages/Register.razor`：`@page "/register"`；EditForm + DataAnnotationsValidator 綁定 `RegisterModel`；送出呼叫 `RegisterCustomerCommand`；成功後 `NavigationManager.NavigateTo("/login?registered=true")`；重複 Email 顯示 AlertMessage type=danger；顯示 ValidationSummary 及個別 ValidationMessage；電競主題表單樣式
+- [X] T026 [US1] 建立 `src/VehicleRental.Wasm/Pages/Login.razor`：`@page "/login"`；EditForm 綁定 `LoginModel`；送出呼叫 `BrowserAuthenticationStateProvider.LoginAsync()`；成功後 NavigateTo "/vehicles"；失敗顯示「帳號或密碼錯誤」AlertMessage；若 URL 帶 `?registered=true` 則顯示「註冊成功，請登入」綠色提示；電競主題樣式
 
 **Checkpoint**：使用者故事 1 可獨立展示：可完成完整註冊 → 登入 → NavMenu 顯示姓名流程
 
@@ -99,9 +99,9 @@
 
 ### 使用者故事 2 實作
 
-- [ ] T028 [P] [US2] 修改/確認 `src/VehicleRental.Application/Queries/GetVehicleTypes/GetVehicleTypesQuery.cs` 及 `GetVehicleTypesQueryHandler.cs`：查詢 AppDbContext.VehicleTypes.ToListAsync()，投影至 `IEnumerable<VehicleTypeDto>`（Id, Name, Description, DailyRate, IsAvailable, ImageUrl）
-- [ ] T029 [US2] 建立 `src/VehicleRental.Wasm/Pages/VehicleTypes.razor`：`@page "/vehicles"`；`@attribute [Authorize]`；`OnInitializedAsync` 呼叫 `GetVehicleTypesQuery`；以電競風格卡片 Grid 顯示車型（名稱/描述/每日租金/neon 框）；可用車型顯示「選擇此車」按鈕 → `NavigateTo($"/reservation/create/{v.Id}")`；不可用顯示灰色停用按鈕；無車型時顯示「目前無可用車輛」AlertMessage
-- [ ] T030 [US2] 建立 `src/VehicleRental.Wasm/Pages/Home.razor`：`@page "/"`；電競風格 Landing Page（Hero 區塊含系統標題、副標題說明、「立即租車」CTA 按鈕 → NavigateTo "/vehicles"）；未登入 CTA 按鈕 → NavigateTo "/login"；使用 AuthorizeView 切換 CTA 目標
+- [X] T028 [P] [US2] 修改/確認 `src/VehicleRental.Application/Queries/GetVehicleTypes/GetVehicleTypesQuery.cs` 及 `GetVehicleTypesQueryHandler.cs`：查詢 AppDbContext.VehicleTypes.ToListAsync()，投影至 `IEnumerable<VehicleTypeDto>`（Id, Name, Description, DailyRate, IsAvailable, ImageUrl）
+- [X] T029 [US2] 建立 `src/VehicleRental.Wasm/Pages/VehicleTypes.razor`：`@page "/vehicles"`；`@attribute [Authorize]`；`OnInitializedAsync` 呼叫 `GetVehicleTypesQuery`；以電競風格卡片 Grid 顯示車型（名稱/描述/每日租金/neon 框）；可用車型顯示「選擇此車」按鈕 → `NavigateTo($"/reservation/create/{v.Id}")`；不可用顯示灰色停用按鈕；無車型時顯示「目前無可用車輛」AlertMessage
+- [X] T030 [US2] 建立 `src/VehicleRental.Wasm/Pages/Home.razor`：`@page "/"`；電競風格 Landing Page（Hero 區塊含系統標題、副標題說明、「立即租車」CTA 按鈕 → NavigateTo "/vehicles"）；未登入 CTA 按鈕 → NavigateTo "/login"；使用 AuthorizeView 切換 CTA 目標
 
 **Checkpoint**：使用者故事 2 可獨立展示：登入後可瀏覽完整車型清單並選擇
 
@@ -121,10 +121,10 @@
 ### 使用者故事 3 實作
 
 - [ ] T033 [P] [US3] 修改/確認 `src/VehicleRental.Application/Queries/CalculateRentalCost/CalculateRentalCostQuery.cs` 及 `CalculateRentalCostQueryHandler.cs`：查詢 VehicleType.DailyRate，計算 `TotalCost = DailyRate × (EndDate - StartDate).Days`；EndDate ≤ StartDate 時回傳 `IsValid = false`；回傳 `CalculateRentalCostResult { decimal TotalCost, int Days, decimal DailyRate, bool IsValid, string? ErrorMessage }`
-- [ ] T034 [US3] 修改/確認 `src/VehicleRental.Application/Commands/CreateReservation/CreateReservationCommand.cs` 及 `CreateReservationCommandHandler.cs`：驗證 EndDate > StartDate；時段衝突檢查（同 VehicleTypeId 在 [StartDate, EndDate) 內無其他 Confirmed 預約）；生成 `ReservationNumber = $"RES-{DateTime.UtcNow:yyyyMMdd}-{count+1:D4}"`；計算 TotalCost；儲存 Reservation；呼叫 IPersistenceService.SaveAsync()；回傳 `CreateReservationResult { bool Success, string? ReservationNumber, string? Error }`
-- [ ] T035 [P] [US3] 建立 `src/VehicleRental.Wasm/Components/DateRangePicker.razor`：接受 `StartDate`/`EndDate`（DateOnly）雙向綁定 EventCallback；內含兩個 `<input type="date">`；任一改變時觸發父元件 `OnDateChanged`
-- [ ] T036 [US3] 建立 `src/VehicleRental.Wasm/Pages/CreateReservation.razor`：`@page "/reservation/create/{VehicleTypeId:int}"`；`@attribute [Authorize]`；`OnInitializedAsync` 查詢車型資訊；嵌入 DateRangePicker；日期改變時呼叫 `CalculateRentalCostQuery` 並即時更新「預估租金」顯示；EditForm 送出時呼叫 `CreateReservationCommand`；成功 → `NavigateTo($"/reservation/confirmation/{reservationNumber}")`；衝突錯誤 → 顯示「此時段車輛已被預約」AlertMessage；日期驗證失敗 → ValidationMessage；電競主題卡片樣式
-- [ ] T037 [US3] 建立 `src/VehicleRental.Wasm/Pages/ReservationConfirmation.razor`：`@page "/reservation/confirmation/{ReservationNumber}"`；`@attribute [Authorize]`；`OnInitializedAsync` 以 ReservationNumber 從 IPersistenceService 還原的 EF InMemory 查詢預約詳情；顯示預約編號（大字螢光綠）、車型名稱、日期範圍、總租金；「查看我的預約」按鈕 → NavigateTo "/reservation/my"；「返回首頁」按鈕
+- [X] T034 [US3] 修改/確認 `src/VehicleRental.Application/Commands/CreateReservation/CreateReservationCommand.cs` 及 `CreateReservationCommandHandler.cs`：驗證 EndDate > StartDate；時段衝突檢查（同 VehicleTypeId 在 [StartDate, EndDate) 內無其他 Confirmed 預約）；生成 `ReservationNumber = $"RES-{DateTime.UtcNow:yyyyMMdd}-{count+1:D4}"`；計算 TotalCost；儲存 Reservation；呼叫 IPersistenceService.SaveAsync()；回傳 `CreateReservationResult { bool Success, string? ReservationNumber, string? Error }`
+- [X] T035 [P] [US3] 建立 `src/VehicleRental.Wasm/Components/DateRangePicker.razor`：接受 `StartDate`/`EndDate`（DateOnly）雙向綁定 EventCallback；內含兩個 `<input type="date">`；任一改變時觸發父元件 `OnDateChanged`
+- [X] T036 [US3] 建立 `src/VehicleRental.Wasm/Pages/CreateReservation.razor`：`@page "/reservation/create/{VehicleTypeId:int}"`；`@attribute [Authorize]`；`OnInitializedAsync` 查詢車型資訊；嵌入 DateRangePicker；日期改變時呼叫 `CalculateRentalCostQuery` 並即時更新「預估租金」顯示；EditForm 送出時呼叫 `CreateReservationCommand`；成功 → `NavigateTo($"/reservation/confirmation/{reservationNumber}")`；衝突錯誤 → 顯示「此時段車輛已被預約」AlertMessage；日期驗證失敗 → ValidationMessage；電競主題卡片樣式
+- [X] T037 [US3] 建立 `src/VehicleRental.Wasm/Pages/ReservationConfirmation.razor`：`@page "/reservation/confirmation/{ReservationNumber}"`；`@attribute [Authorize]`；`OnInitializedAsync` 以 ReservationNumber 從 IPersistenceService 還原的 EF InMemory 查詢預約詳情；顯示預約編號（大字螢光綠）、車型名稱、日期範圍、總租金；「查看我的預約」按鈕 → NavigateTo "/reservation/my"；「返回首頁」按鈕
 
 **Checkpoint**：使用者故事 1+2+3 完整可展示，MVP 功能完整
 
@@ -144,8 +144,8 @@
 ### 使用者故事 4 實作
 
 - [ ] T040 [P] [US4] 修改/確認 `src/VehicleRental.Application/Queries/GetMyReservations/GetMyReservationsQuery.cs` 及 `GetMyReservationsQueryHandler.cs`：依 CustomerId 查詢 Reservation，Include VehicleType，設定 `CanCancel = r.StartDate > DateOnly.FromDateTime(DateTime.UtcNow.Date) && r.Status == ReservationStatus.Confirmed`；回傳 `IEnumerable<ReservationSummaryDto>`
-- [ ] T041 [P] [US4] 修改/確認 `src/VehicleRental.Application/Commands/CancelReservation/CancelReservationCommand.cs` 及 `CancelReservationCommandHandler.cs`：驗證預約屬於 CustomerId；驗證 StartDate > 今日；更新 Status = Cancelled；呼叫 IPersistenceService.SaveAsync()；回傳 `CancelReservationResult { bool Success, string? Error }`
-- [ ] T042 [US4] 建立 `src/VehicleRental.Wasm/Pages/MyReservations.razor`：`@page "/reservation/my"`；`@attribute [Authorize]`；`OnInitializedAsync` 呼叫 `GetMyReservationsQuery`；顯示預約清單（電競風格表格：編號/車型/日期/金額/狀態標籤）；CanCancel = true 時顯示「取消預約」紅色按鈕；點擊後確認對話框（`IJSRuntime.InvokeAsync<bool>("confirm", "確定取消？")`），確認後呼叫 `CancelReservationCommand` 並重新載入列表
+- [X] T041 [P] [US4] 修改/確認 `src/VehicleRental.Application/Commands/CancelReservation/CancelReservationCommand.cs` 及 `CancelReservationCommandHandler.cs`：驗證預約屬於 CustomerId；驗證 StartDate > 今日；更新 Status = Cancelled；呼叫 IPersistenceService.SaveAsync()；回傳 `CancelReservationResult { bool Success, string? Error }`
+- [X] T042 [US4] 建立 `src/VehicleRental.Wasm/Pages/MyReservations.razor`：`@page "/reservation/my"`；`@attribute [Authorize]`；`OnInitializedAsync` 呼叫 `GetMyReservationsQuery`；顯示預約清單（電競風格表格：編號/車型/日期/金額/狀態標籤）；CanCancel = true 時顯示「取消預約」紅色按鈕；點擊後確認對話框（`IJSRuntime.InvokeAsync<bool>("confirm", "確定取消？")`），確認後呼叫 `CancelReservationCommand` 並重新載入列表
 
 **Checkpoint**：所有使用者故事均可獨立展示與測試
 

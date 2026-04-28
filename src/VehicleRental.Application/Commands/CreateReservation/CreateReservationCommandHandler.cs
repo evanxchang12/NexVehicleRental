@@ -10,10 +10,12 @@ namespace VehicleRental.Application.Commands.CreateReservation;
 public class CreateReservationCommandHandler : IRequestHandler<CreateReservationCommand, CreateReservationResult>
 {
     private readonly IAppDbContext _context;
+    private readonly IPersistenceService? _persistence;
 
-    public CreateReservationCommandHandler(IAppDbContext context)
+    public CreateReservationCommandHandler(IAppDbContext context, IPersistenceService? persistence = null)
     {
         _context = context;
+        _persistence = persistence;
     }
 
     public async Task<CreateReservationResult> Handle(CreateReservationCommand request, CancellationToken cancellationToken)
@@ -61,6 +63,10 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
         _context.Reservations.Add(reservation);
         await _context.SaveChangesAsync(cancellationToken);
 
+        if (_persistence is not null)
+            await _persistence.SaveAsync();
+
         return new CreateReservationResult(true, reservation.Id, null);
     }
 }
+

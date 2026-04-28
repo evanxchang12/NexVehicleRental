@@ -7,7 +7,6 @@
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.*" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.*" />
-    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="10.*" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VehicleRental.Domain\VehicleRental.Domain.csproj" />

@@ -1,0 +1,24 @@
+@if (!string.IsNullOrEmpty(Message))
+{
+    <div class="alert alert-@CssClass alert-dismissible esports-alert" role="alert">
+        @Message
+        <button type="button" class="btn-close" @onclick="Dismiss" aria-label="Close"></button>
+    </div>
+}
+
+@code {
+    [Parameter] public string? Message { get; set; }
+
+    /// <summary>success | warning | danger | info</summary>
+    [Parameter] public string Type { get; set; } = "info";
+
+    private string CssClass => Type switch
+    {
+        "success" => "success",
+        "warning" => "warning",
+        "danger"  => "danger",
+        _         => "info"
+    };
+
+    private void Dismiss() => Message = null;
+}
