@@ -1,8 +1,13 @@
-# 資料模型：車輛租用系統
+# 資料模型：車輛租用系統（Blazor WASM 版）
 
 **功能分支**: `001-vehicle-rental-system`  
-**日期**: 2026-04-27  
+**日期更新**: 2026-04-28  
+**架構**: Blazor WebAssembly + EF Core InMemory + localStorage 持久化  
 **輸入**: research.md + spec.md
+
+> **WASM 架構說明**：資料模型實體（`Customer`、`VehicleType`、`Reservation`）保持不變。  
+> 主要差異在於資料庫 Provider 從 SQL Server 改為 EF Core InMemory，並以 localStorage JSON 跨 Session 持久化。  
+> 所有 EF Core `Fluent API` 設定保留（用於驗證語意），但 `HasColumnType("decimal(18,2)")` 在 InMemory Provider 中無實際作用（僅保留文件語意）。
 
 ---
 
@@ -138,3 +143,59 @@ Customer (1) ──── (N) Reservation (N) ──── (1) VehicleType
 | `Customers` | `Customer` |
 | `VehicleTypes` | `VehicleType` |
 | `Reservations` | `Reservation` |
+
+---
+
+## WASM 持久化策略
+
+### localStorage 序列化格式
+
+```json
+// localStorage key: "vehiclerental-data"
+{
+  "customers": [
+    {
+      "id": 1,
+      "fullName": "王小明",
+      "email": "test@example.com",
+      "passwordHash": "PBKDF2:v1:salt_hex:hash_hex",
+      "createdAt": "2026-04-28T00:00:00+08:00"
+    }
+  ],
+  "vehicleTypes": [ /* seed data 4 筆 */ ],
+  "reservations": [ /* 用戶建立的預約 */ ]
+}
+```
+
+### 資料生命週期
+
+```
+App 冷啟動（首次）：載入 Seed VehicleTypes → 寫入 EF InMemory → 不寫 localStorage
+App 冷啟動（再次）：讀 localStorage → 反序列化 → 還原 EF InMemory（含用戶 + 預約）
+RegisterCustomer：EF InMemory 新增 → 觸發 PersistenceService.SaveAsync()
+CreateReservation：EF InMemory 新增 → 觸發 PersistenceService.SaveAsync()
+CancelReservation：EF InMemory 更新 → 觸發 PersistenceService.SaveAsync()
+```
+
+### PersistenceService 介面
+
+```csharp
+public interface IPersistenceService
+{
+    Task SaveAsync();     // 序列化全部 DbSet 至 localStorage
+    Task RestoreAsync();  // 從 localStorage 讀取並填入 EF InMemory
+}
+```
+
+### 升級路徑（SQLite OPFS）
+
+若未來需要更大容量或真正的 SQL 查詢，可替換為：
+```xml
+<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.*" />
+<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3_wasm" Version="2.1.*" />
+```
+並將 `DbContext` 設定改為：
+```csharp
+options.UseSqlite("Data Source=/data/vehiclerental.db");
+```
+注意：OPFS 需要 `Cross-Origin-Opener-Policy: same-origin` 及 `Cross-Origin-Embedder-Policy: require-corp` Headers，GitHub Pages 預設不支援，需要自訂 Service Worker 設定。
