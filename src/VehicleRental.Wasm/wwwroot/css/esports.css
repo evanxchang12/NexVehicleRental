@@ -98,11 +98,14 @@ a:hover { color: #66ffcc; text-decoration: underline; }
 /* 導覽列中的按鈕覆寫：確保 .btn-esports 在 navbar 中不被 .nav-link 的 padding 覆寫 */
 .navbar-esports .btn-esports,
 .esports-navbar .btn-esports {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: .65rem 1.6rem !important;
     font-size: .95rem;
     line-height: 1;
     vertical-align: middle;
+    box-sizing: border-box;
 }
 
 /* 導覽列的 hero-cta 也要套用較大 padding */
