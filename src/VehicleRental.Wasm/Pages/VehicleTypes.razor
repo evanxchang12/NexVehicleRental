@@ -2,6 +2,7 @@
 @attribute [Authorize]
 @inject IMediator Mediator
 
+<div class="container-xl py-4">
 <h2 class="mb-4">車型清單</h2>
 
 @if (_loading)
@@ -45,6 +46,7 @@ else
         }
     </div>
 }
+</div>
 
 @code {
     private List<VehicleRental.Application.DTOs.VehicleTypeDto> _vehicles = [];

@@ -3,6 +3,7 @@
 @inject IMediator Mediator
 @inject BrowserAuthenticationStateProvider AuthService
 
+<div class="container-xl py-4">
 <h2 class="mb-4">我的預約</h2>
 
 @if (_loading)
@@ -70,6 +71,7 @@ else
         </table>
     </div>
 }
+</div>
 
 @code {
     private List<VehicleRental.Application.DTOs.ReservationSummaryDto> _reservations = [];

@@ -4,6 +4,7 @@
 @inject BrowserAuthenticationStateProvider AuthService
 @inject NavigationManager Nav
 
+<div class="container-xl py-4">
 <h2 class="mb-4">建立預約</h2>
 
 @if (_loading)
@@ -57,6 +58,7 @@ else
         </div>
     </div>
 }
+</div>
 
 @code {
     [Parameter] public int VehicleTypeId { get; set; }

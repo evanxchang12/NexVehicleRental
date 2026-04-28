@@ -1,13 +1,83 @@
 ﻿@page "/"
-@attribute [Authorize]
 @inject BrowserAuthenticationStateProvider AuthService
 
-<div class="text-center py-5">
-    <h1 class="display-4 mb-3">歡迎回來，@AuthService.CurrentCustomerName！</h1>
-    <p class="lead text-muted">選擇您理想中的座駕，開啟您的旅程。</p>
-    <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
-        <a href="vehicles" class="btn btn-success esports-btn-success btn-lg px-5">瀏覽車型</a>
-        <a href="reservation/my" class="btn btn-outline-light btn-lg px-5">我的預約</a>
-    </div>
-</div>
+<AuthorizeView>
+    <Authorized>
+        <div class="hero-section">
+            <div class="text-center">
+                <p class="hero-subtitle" style="letter-spacing:6px;font-size:.9rem">NEXT GENERATION VEHICLE RENTAL</p>
+                <h1 class="hero-title">
+                    <span class="neon-text-green">NEX</span>DRIVE
+                </h1>
+                <p class="hero-subtitle">歡迎回來，@context.User.Identity?.Name！</p>
+                <hr class="esports-divider" style="max-width:300px;margin:1.5rem auto" />
+                <a href="vehicles" class="btn-esports hero-cta">立即租車</a>
+
+                <div class="row g-4 mt-5 justify-content-center" style="max-width:800px;margin-left:auto;margin-right:auto">
+                    <div class="col-md-4">
+                        <div class="esports-card text-center">
+                            <div style="font-size:2.5rem;color:var(--neon-green)">&#9644;</div>
+                            <h5 class="mt-2 mb-1" style="color:var(--neon-green);font-size:1rem">多元車型</h5>
+                            <p style="color:var(--text-muted);font-size:.9rem">轎車、休旅、豪華、商用，應有盡有</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="esports-card text-center">
+                            <div style="font-size:2.5rem;color:var(--neon-purple)">&#128197;</div>
+                            <h5 class="mt-2 mb-1" style="color:var(--neon-purple);font-size:1rem">即時預約</h5>
+                            <p style="color:var(--text-muted);font-size:.9rem">線上選車、選時段、確認，3分鐘完成</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="esports-card text-center">
+                            <div style="font-size:2.5rem;color:var(--neon-blue)">&#128737;</div>
+                            <h5 class="mt-2 mb-1" style="color:var(--neon-blue);font-size:1rem">安全保障</h5>
+                            <p style="color:var(--text-muted);font-size:.9rem">帳戶加密保護，個人資料安全無虞</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="hero-section">
+            <div class="text-center">
+                <p class="hero-subtitle" style="letter-spacing:6px;font-size:.9rem">NEXT GENERATION VEHICLE RENTAL</p>
+                <h1 class="hero-title">
+                    <span class="neon-text-green">NEX</span>DRIVE
+                </h1>
+                <p class="hero-subtitle">全球頂級車型・即刻預約・零距離啟程</p>
+                <hr class="esports-divider" style="max-width:300px;margin:1.5rem auto" />
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="login" class="btn-esports hero-cta">立即登入</a>
+                    <a href="register" class="btn-esports btn-esports-purple hero-cta">立即註冊</a>
+                </div>
+
+                <div class="row g-4 mt-5 justify-content-center" style="max-width:800px;margin-left:auto;margin-right:auto">
+                    <div class="col-md-4">
+                        <div class="esports-card text-center">
+                            <div style="font-size:2.5rem;color:var(--neon-green)">&#9644;</div>
+                            <h5 class="mt-2 mb-1" style="color:var(--neon-green);font-size:1rem">多元車型</h5>
+                            <p style="color:var(--text-muted);font-size:.9rem">轎車、休旅、豪華、商用，應有盡有</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="esports-card text-center">
+                            <div style="font-size:2.5rem;color:var(--neon-purple)">&#128197;</div>
+                            <h5 class="mt-2 mb-1" style="color:var(--neon-purple);font-size:1rem">即時預約</h5>
+                            <p style="color:var(--text-muted);font-size:.9rem">線上選車、選時段、確認，3分鐘完成</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="esports-card text-center">
+                            <div style="font-size:2.5rem;color:var(--neon-blue)">&#128737;</div>
+                            <h5 class="mt-2 mb-1" style="color:var(--neon-blue);font-size:1rem">安全保障</h5>
+                            <p style="color:var(--text-muted);font-size:.9rem">帳戶加密保護，個人資料安全無虞</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
 
