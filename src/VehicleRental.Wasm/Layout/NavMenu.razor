@@ -1,48 +1,83 @@
-﻿@inject VehicleRental.Wasm.Auth.BrowserAuthenticationStateProvider AuthService
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@inject VehicleRental.Wasm.Auth.BrowserAuthenticationStateProvider AuthService
 @inject NavigationManager Nav
 
-<nav class="navbar navbar-expand-lg navbar-esports sticky-top">
-    <div class="container-xl">
-        <a class="navbar-brand-esports" href="">&#9889; NEXDRIVE</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+<div class="top-row navbar navbar-dark">
+    <div class="nav-container">
+
+        <NavLink class="navbar-brand brand-link" href="" Match="NavLinkMatch.All">
+            <span class="brand-icon">⚡</span>
+            <span class="brand-text">NEXDRIVE</span>
+        </NavLink>
+
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarMain">
-            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+
+        <div class="@NavMenuCssClass nav-scrollable">
+            <nav class="nav-menu">
+
+                <div class="main-nav">
+                    <div class="nav-item">
+                        <NavLink class="nav-link" href="cars">
+                            租車
+                        </NavLink>
+                    </div>
+
+                    <div class="nav-item">
+                        <NavLink class="nav-link" href="my-bookings">
+                            我的預約
+                        </NavLink>
+                    </div>
+                </div>
+
                 <AuthorizeView>
-                    <Authorized>
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="vehicles">租車</NavLink>
-                        </li>
-                        <li class="nav-item">
-                            <NavLink class="nav-link" href="reservation/my">我的預約</NavLink>
-                        </li>
-                        <li class="nav-item ms-lg-2">
-                            <span class="nav-link esports-username">@context.User.Identity?.Name</span>
-                        </li>
-                        <li class="nav-item">
-                            <button class="btn-esports btn-esports-sm btn-esports-danger ms-1" @onclick="Logout">登出</button>
-                        </li>
+                    <Authorized Context="authContext">
+                        <div class="auth-actions">
+                            <span class="user-name">
+                                @authContext.User.Identity?.Name
+                            </span>
+
+                            <button type="button"
+                                    class="auth-btn auth-btn-login"
+                                    @onclick="Logout">
+                                登出
+                            </button>
+                        </div>
                     </Authorized>
+
                     <NotAuthorized>
-                        <li class="nav-item ms-lg-1">
-                            <NavLink class="btn-esports hero-cta" href="login">登入</NavLink>
-                        </li>
-                        <li class="nav-item ms-lg-1">
-                            <NavLink class="btn-esports btn-esports-purple hero-cta" href="register">立即註冊</NavLink>
-                        </li>
+                        <div class="auth-actions">
+                            <NavLink class="auth-btn auth-btn-login" href="login">
+                                登入
+                            </NavLink>
+
+                            <NavLink class="auth-btn auth-btn-register" href="register">
+                                立即註冊
+                            </NavLink>
+                        </div>
                     </NotAuthorized>
                 </AuthorizeView>
-            </ul>
+
+            </nav>
         </div>
+
     </div>
-</nav>
+</div>
 
 @code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
     private async Task Logout()
     {
         await AuthService.LogoutAsync();
         Nav.NavigateTo("login", forceLoad: false);
     }
 }
-
