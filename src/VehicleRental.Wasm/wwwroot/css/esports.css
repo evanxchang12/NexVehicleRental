@@ -10,7 +10,7 @@
     --neon-purple:   #7b2fff;
     --neon-blue:     #00c8ff;
     --text-primary:  #e0e0e0;
-    --text-muted:    #707080;
+    --text-muted:    #9595a8;
     --border-dark:   #1e2030;
     --border-neon:   #00ff9955;
     --danger:        #ff3366;
@@ -206,6 +206,18 @@ a:hover { color: #66ffcc; text-decoration: underline; }
 }
 
 .form-text { color: var(--text-muted) !important; }
+
+/* Override Bootstrap text-muted for dark theme */
+.text-muted { color: var(--text-muted) !important; }
+
+/* Code elements in dark theme */
+code {
+    color: var(--neon-green);
+    background: rgba(0,255,153,.08);
+    padding: .1em .35em;
+    border-radius: 3px;
+    font-size: .88em;
+}
 
 .text-danger, .field-validation-error { color: var(--danger) !important; }
 

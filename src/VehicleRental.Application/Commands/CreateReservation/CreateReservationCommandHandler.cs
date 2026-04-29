@@ -20,8 +20,8 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
 
     public async Task<CreateReservationResult> Handle(CreateReservationCommand request, CancellationToken cancellationToken)
     {
-        if (request.EndDate <= request.StartDate)
-            return new CreateReservationResult(false, 0, "結束日期必須晚於起始日期");
+        if (request.EndDate < request.StartDate)
+            return new CreateReservationResult(false, 0, "結束日期不可早於起始日期");
 
         var vehicleType = await _context.VehicleTypes
             .FirstOrDefaultAsync(v => v.Id == request.VehicleTypeId, cancellationToken);
@@ -45,7 +45,7 @@ public class CreateReservationCommandHandler : IRequestHandler<CreateReservation
 
         var reservationNumber = $"RES-{today:yyyyMMdd}-{todayCount + 1:D4}";
 
-        var days = request.EndDate.DayNumber - request.StartDate.DayNumber;
+        var days = Math.Max(1, request.EndDate.DayNumber - request.StartDate.DayNumber);
         var totalCost = vehicleType.DailyRate * days;
 
         var reservation = new Reservation

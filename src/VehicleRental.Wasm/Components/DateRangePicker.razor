@@ -33,9 +33,9 @@
     private string TodayStr => DateOnly.FromDateTime(DateTime.Today).ToString("yyyy-MM-dd");
     private string StartDateStr => StartDate == default ? string.Empty : StartDate.ToString("yyyy-MM-dd");
     private string EndDateStr   => EndDate   == default ? string.Empty : EndDate.ToString("yyyy-MM-dd");
-    private string MinEndStr    => StartDate == default ? TodayStr : StartDate.AddDays(1).ToString("yyyy-MM-dd");
-    private int    Days         => (StartDate != default && EndDate != default && EndDate > StartDate)
-                                       ? EndDate.DayNumber - StartDate.DayNumber : 0;
+    private string MinEndStr    => StartDate == default ? TodayStr : StartDate.ToString("yyyy-MM-dd");
+    private int    Days         => (StartDate != default && EndDate != default && EndDate >= StartDate)
+                                       ? Math.Max(1, EndDate.DayNumber - StartDate.DayNumber) : 0;
 
     private async Task OnStartChanged(ChangeEventArgs e)
     {
@@ -43,7 +43,7 @@
         {
             await StartDateChanged.InvokeAsync(d);
             // Reset end if it's no longer valid
-            if (EndDate != default && EndDate <= d)
+            if (EndDate != default && EndDate < d)
                 await EndDateChanged.InvokeAsync(default);
         }
     }
